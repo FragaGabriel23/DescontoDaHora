@@ -1,7 +1,7 @@
-CREATE DATABASE desconto
+CREATE DATABASE discount
     WITH
         OWNER = postgres
         ENCODING = 'UTF8'
         CONNECTION LIMIT = -1;
 
-\c desconto;
+\c discount;
