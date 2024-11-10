@@ -1,21 +1,37 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsInt,
+  IsString,
+  Length,
+  IsDateString,
+  MinLength,
+} from 'class-validator';
 
 export class UsersDto {
+  @IsInt()
   @ApiPropertyOptional()
   readonly id?: number;
 
-  @ApiProperty()
+  @IsString()
+  @Length(3, 25)
+  @ApiProperty({ description: 'User name, between 3 and 25 characters.' })
   readonly name: string;
 
-  @ApiProperty()
+  @IsEmail()
+  @ApiProperty({ description: 'Valid email address of the user.' })
   readonly email: string;
 
-  @ApiProperty()
+  @IsString()
+  @MinLength(8)
+  @ApiProperty({ description: 'User password, at least 8 characters.' })
   readonly password: string;
 
-  @ApiPropertyOptional()
+  @IsDateString()
+  @ApiPropertyOptional({ description: 'Creation date in ISO format.' })
   readonly createdAt?: string;
 
-  @ApiPropertyOptional()
+  @IsDateString()
+  @ApiPropertyOptional({ description: 'Update date in ISO format.' })
   readonly updatedAt?: string;
 }
