@@ -5,7 +5,6 @@ import {
   IsString,
   Length,
   IsDateString,
-  MinLength,
 } from 'class-validator';
 
 export class UsersDto {
@@ -21,11 +20,6 @@ export class UsersDto {
   @IsEmail()
   @ApiProperty({ description: 'Valid email address of the user.' })
   readonly email: string;
-
-  @IsString()
-  @MinLength(8)
-  @ApiProperty({ description: 'User password, at least 8 characters.' })
-  readonly password: string;
 
   @IsDateString()
   @ApiPropertyOptional({ description: 'Creation date in ISO format.' })
