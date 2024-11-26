@@ -7,7 +7,7 @@ import {
   IsDateString,
 } from 'class-validator';
 
-export class UsersDto {
+export class CreateUserDto {
   @IsInt()
   @ApiPropertyOptional()
   readonly id?: number;
