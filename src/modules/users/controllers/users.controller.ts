@@ -9,9 +9,9 @@ import {
   Res,
   HttpStatus,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UsersService } from '../services/users.service';
 import { Response } from 'express';
-import { UsersDto } from './users.dto';
+import { UsersDto } from '../dto/users.dto';
 
 @Controller('users')
 export class UsersController {
