@@ -8,7 +8,7 @@ import {
 
 @Entity({ name: 'users' })
 export class Users {
-  @PrimaryGeneratedColumn({ name: 'uuid' })
+  @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
   @Column({ name: 'name', nullable: false })
