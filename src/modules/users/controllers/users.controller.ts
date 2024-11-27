@@ -6,11 +6,8 @@ import {
   Put,
   Delete,
   Param,
-  Res,
-  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
-import { Response } from 'express';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
@@ -19,36 +16,32 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAllUsers(@Res() response: Response) {
+  async findAll() {
     const users = await this.usersService.findAllUsers();
-    return response.status(HttpStatus.OK).json(users);
+    return users;
   }
 
   @Get(':id')
-  async findUserById(@Param('id') id: number, @Res() response: Response) {
+  async findById(@Param('id') id: number) {
     const user = await this.usersService.findOneUser(id);
-    return response.status(HttpStatus.OK).json(user);
+    return user;
   }
 
   @Post()
-  async createUser(@Res() response: Response, @Body() userDTO: CreateUserDto) {
+  async create(@Body() userDTO: CreateUserDto) {
     const userCreated = await this.usersService.createUser(userDTO);
-    return response.status(HttpStatus.CREATED).json(userCreated);
+    return userCreated;
   }
 
   @Put(':id')
-  async updateUser(
-    @Param('id') id: number,
-    @Res() response: Response,
-    @Body() userDTO: UpdateUserDto,
-  ) {
+  async update(@Param('id') id: number, @Body() userDTO: UpdateUserDto) {
     const updatedUser = await this.usersService.updateUser(id, userDTO);
-    return response.status(HttpStatus.OK).json(updatedUser);
+    return updatedUser;
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: number, @Res() response: Response) {
+  async delete(@Param('id') id: number) {
     await this.usersService.deleteUser(id);
-    return response.status(HttpStatus.NO_CONTENT).send();
+    return;
   }
 }
