@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsInt,
@@ -14,11 +14,13 @@ export class UpdateUserDto {
 
   @IsString()
   @Length(3, 25)
-  @ApiProperty({ description: 'User name, between 3 and 25 characters.' })
+  @ApiPropertyOptional({
+    description: 'User name, between 3 and 25 characters.',
+  })
   readonly name?: string;
 
   @IsEmail()
-  @ApiProperty({ description: 'Valid email address of the user.' })
+  @ApiPropertyOptional({ description: 'Valid email address of the user.' })
   readonly email?: string;
 
   @IsDateString()
