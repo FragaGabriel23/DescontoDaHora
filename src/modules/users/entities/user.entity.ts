@@ -1,7 +1,9 @@
+import { Promotions } from 'src/modules/promotions/entities/promotions.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -22,4 +24,7 @@ export class Users {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
+
+  @OneToMany(() => Promotions, (promotion) => promotion.user)
+  promotions: Promotions[];
 }

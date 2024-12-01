@@ -1,7 +1,12 @@
+import { Categories } from 'src/modules/categories/entities/category.entity';
+import { Store } from 'src/modules/store/entities/store.entity';
+import { Users } from 'src/modules/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -37,4 +42,13 @@ export class Promotions {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
+
+  @ManyToOne(() => Users, (user) => user.promotions)
+  user: Users;
+
+  @ManyToMany(() => Categories, (category) => category.promotions)
+  categories: Categories[];
+
+  @ManyToOne(() => Store, (store) => store.promotions)
+  store: Store;
 }

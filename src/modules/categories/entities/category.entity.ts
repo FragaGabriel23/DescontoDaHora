@@ -1,7 +1,9 @@
+import { Promotions } from 'src/modules/promotions/entities/promotions.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -19,4 +21,7 @@ export class Categories {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
+
+  @ManyToMany(() => Promotions, (promotion) => promotion.categories)
+  promotions: Promotions[];
 }
