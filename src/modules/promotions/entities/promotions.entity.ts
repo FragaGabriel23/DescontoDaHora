@@ -43,12 +43,21 @@ export class Promotions {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
 
-  @ManyToOne(() => Users, (user) => user.promotions)
+  @ManyToOne(() => Users, (user) => user.promotions, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   user: Users;
 
-  @ManyToMany(() => Categories, (category) => category.promotions)
+  @ManyToMany(() => Categories, (category) => category.promotions, {
+    cascade: true,
+  })
   categories: Categories[];
 
-  @ManyToOne(() => Store, (store) => store.promotions)
+  @ManyToOne(() => Store, (store) => store.promotions, {
+    eager: true,
+    cascade: true,
+  })
   store: Store;
 }
