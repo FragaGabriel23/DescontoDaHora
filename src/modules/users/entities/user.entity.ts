@@ -1,3 +1,4 @@
+import { Role } from 'src/common/enums/roles/role.enum';
 import { Promotions } from 'src/modules/promotions/entities/promotions.entity';
 import {
   Column,
@@ -27,4 +28,7 @@ export class Users {
 
   @OneToMany(() => Promotions, (promotion) => promotion.user)
   promotions: Promotions[];
+
+  @Column({ name: 'roles', nullable: false })
+  roles: Role[];
 }
