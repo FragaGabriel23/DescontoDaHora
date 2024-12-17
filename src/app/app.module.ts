@@ -1,10 +1,16 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from '../modules/users/users.module';
 import { PromotionsModule } from 'src/modules/promotions/promotions.module';
 import { CategoriesModule } from 'src/modules/categories/categories.module';
 import { StoreModule } from 'src/modules/store/store.module';
 import { rolesProviders } from 'src/common/guards/roles/roles.providers';
+import { PreauthMiddleware } from 'src/middlewares/auth/firebase/preauth/preauth.middleware';
 
 @Module({
   imports: [
@@ -17,4 +23,11 @@ import { rolesProviders } from 'src/common/guards/roles/roles.providers';
   controllers: [],
   providers: [...rolesProviders],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PreauthMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
+  }
+}

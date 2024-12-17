@@ -1,0 +1,59 @@
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { app, initializeApp, credential } from 'firebase-admin';
+import * as serviceAccount from '../../../../../config/firebase/firebaseServiceAccount.json';
+import { Request, Response } from 'express';
+
+const firebase_params = {
+  type: serviceAccount.type,
+  projectId: serviceAccount.project_id,
+  privateKeyId: serviceAccount.private_key_id,
+  privateKey: serviceAccount.private_key,
+  clientEmail: serviceAccount.client_email,
+  clientId: serviceAccount.client_id,
+  authUri: serviceAccount.auth_uri,
+  tokenUri: serviceAccount.token_uri,
+  authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
+  clientX509CertUrl: serviceAccount.client_x509_cert_url,
+};
+
+@Injectable()
+export class PreauthMiddleware implements NestMiddleware {
+  private defaultApp: app.App;
+  constructor() {
+    this.defaultApp = initializeApp({
+      credential: credential.cert(firebase_params),
+      databaseURL: 'https://desconto-da-hora-default-rtdb.firebaseio.com/',
+    });
+  }
+
+  use(req: Request, res: Response, next: () => void) {
+    const token = req.headers.authorization;
+    if (token != null && token != '') {
+      this.defaultApp
+        .auth()
+        .verifyIdToken(token.replace('Bearer', ''))
+        .then(async (decodedToken) => {
+          const user = {
+            email: decodedToken.email,
+          };
+          req['user'] = user;
+          next();
+        })
+        .catch((error) => {
+          console.log(error);
+          this.accessDenied(req.url, res);
+        });
+    } else {
+      next();
+    }
+  }
+
+  private accessDenied(url: string, res: Response) {
+    res.status(403).json({
+      statusCode: 403,
+      timestamp: new Date().toISOString(),
+      path: url,
+      message: 'Access Denied',
+    });
+  }
+}
