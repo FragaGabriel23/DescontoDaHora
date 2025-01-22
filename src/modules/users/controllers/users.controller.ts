@@ -27,7 +27,14 @@ export class UsersController {
   @Roles(Role.Admin)
   @Get(':id')
   async findById(@Param('id') id: number) {
-    const user = await this.usersService.findOneUser(id);
+    const user = await this.usersService.findOneUserById(id);
+    return user;
+  }
+
+  @Roles(Role.Admin)
+  @Get(':email')
+  async findByEmail(@Param('email') email: string) {
+    const user = await this.usersService.findOneUserByEmail(email);
     return user;
   }
 

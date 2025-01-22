@@ -1,41 +1,31 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { app, initializeApp, credential } from 'firebase-admin';
-import * as serviceAccount from '../../../../../config/firebase/firebaseServiceAccount.json';
+import { app } from 'firebase-admin';
 import { Request, Response } from 'express';
-
-const firebase_params = {
-  type: serviceAccount.type,
-  projectId: serviceAccount.project_id,
-  privateKeyId: serviceAccount.private_key_id,
-  privateKey: serviceAccount.private_key,
-  clientEmail: serviceAccount.client_email,
-  clientId: serviceAccount.client_id,
-  authUri: serviceAccount.auth_uri,
-  tokenUri: serviceAccount.token_uri,
-  authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
-  clientX509CertUrl: serviceAccount.client_x509_cert_url,
-};
+import { initializeFirebaseApp } from 'src/core/firebase/firebase-config';
+import { UsersService } from 'src/modules/users/services/users.service';
 
 @Injectable()
 export class PreauthMiddleware implements NestMiddleware {
-  private defaultApp: app.App;
-  constructor() {
-    this.defaultApp = initializeApp({
-      credential: credential.cert(firebase_params),
-      databaseURL: 'https://desconto-da-hora-default-rtdb.firebaseio.com/',
-    });
-  }
+  private defaultApp: app.App | null = null;
 
-  use(req: Request, res: Response, next: () => void) {
+  constructor(private readonly UsersServices: UsersService) {}
+
+  async use(req: Request, res: Response, next: () => void) {
+    if (!this.defaultApp) {
+      this.defaultApp = await initializeFirebaseApp();
+    }
+
     const token = req.headers.authorization;
+
     if (token != null && token != '') {
       this.defaultApp
         .auth()
         .verifyIdToken(token.replace('Bearer', ''))
         .then(async (decodedToken) => {
-          const user = {
-            email: decodedToken.email,
-          };
+          const user = await this.UsersServices.findOneUserByEmail(
+            decodedToken.email,
+          );
+
           req['user'] = user;
           next();
         })

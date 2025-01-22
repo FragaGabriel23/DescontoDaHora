@@ -25,7 +25,7 @@ import { PreauthMiddleware } from 'src/middlewares/auth/firebase/preauth/preauth
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(PreauthMiddleware).forRoutes({
+    consumer.apply(PreauthMiddleware).exclude().forRoutes({
       path: '*',
       method: RequestMethod.ALL,
     });
