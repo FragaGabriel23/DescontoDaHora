@@ -35,5 +35,5 @@ export class UpdateUserDto {
 
   @IsEnum(Role)
   @ApiPropertyOptional({ description: 'Authorization Rules' })
-  readonly roles?: Role[];
+  readonly roles?: Role;
 }

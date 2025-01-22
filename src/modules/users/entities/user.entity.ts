@@ -14,7 +14,10 @@ export class Users {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'name', nullable: false })
+  @Column({ name: 'uid', nullable: true })
+  uid: string;
+
+  @Column({ name: 'name', nullable: true })
   name: string;
 
   @Column({ name: 'email', nullable: false, unique: true })
@@ -29,6 +32,12 @@ export class Users {
   @OneToMany(() => Promotions, (promotion) => promotion.user)
   promotions: Promotions[];
 
-  @Column({ name: 'roles', nullable: false })
-  roles: Role[];
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.User,
+    name: 'roles',
+    nullable: false,
+  })
+  roles: Role;
 }

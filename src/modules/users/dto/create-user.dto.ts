@@ -14,10 +14,15 @@ export class CreateUserDto {
   @ApiPropertyOptional()
   readonly id?: number;
 
+  @ApiPropertyOptional({ description: 'Firebase UID' })
+  readonly uid?: string;
+
   @IsString()
   @Length(3, 25)
-  @ApiProperty({ description: 'User name, between 3 and 25 characters.' })
-  readonly name: string;
+  @ApiPropertyOptional({
+    description: 'User name, between 3 and 25 characters.',
+  })
+  readonly name?: string;
 
   @IsEmail()
   @ApiProperty({ description: 'Valid email address of the user.' })
@@ -32,6 +37,6 @@ export class CreateUserDto {
   readonly updatedAt?: string;
 
   @IsEnum(Role)
-  @ApiProperty({ description: 'Authorization Rules' })
-  readonly roles: Role[];
+  @ApiPropertyOptional({ description: 'Authorization Rules' })
+  readonly roles?: Role;
 }
