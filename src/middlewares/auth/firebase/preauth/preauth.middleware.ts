@@ -31,6 +31,7 @@ export class PreauthMiddleware implements NestMiddleware {
             user = await this.usersServices.createUser({
               uid: decodedToken.uid,
               email: decodedToken.email,
+              roles: decodedToken?.role,
             } as CreateUserDto);
           }
 
