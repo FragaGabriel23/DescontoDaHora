@@ -11,6 +11,7 @@ import { CategoriesModule } from 'src/modules/categories/categories.module';
 import { StoreModule } from 'src/modules/store/store.module';
 import { rolesProviders } from 'src/common/guards/roles/roles.providers';
 import { PreauthMiddleware } from 'src/middlewares/auth/firebase/preauth/preauth.middleware';
+import { FirebaseModule } from 'src/modules/firebase/firebase.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PreauthMiddleware } from 'src/middlewares/auth/firebase/preauth/preauth
     PromotionsModule,
     CategoriesModule,
     StoreModule,
+    FirebaseModule,
   ],
   controllers: [],
   providers: [...rolesProviders],

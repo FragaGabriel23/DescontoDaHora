@@ -1,47 +1,32 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { app } from 'firebase-admin';
 import { Request, Response } from 'express';
-import { initializeFirebaseApp } from 'src/core/firebase/firebase-config';
 import { UsersService } from 'src/modules/users/services/users.service';
-import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
+import { FirebaseService } from 'src/modules/firebase/services/firebase.service';
 
 @Injectable()
 export class PreauthMiddleware implements NestMiddleware {
-  private defaultApp: app.App | null = null;
-
-  constructor(private readonly usersServices: UsersService) {}
+  constructor(
+    private readonly usersServices: UsersService,
+    private readonly firebaseService: FirebaseService,
+  ) {}
 
   async use(req: Request, res: Response, next: () => void) {
-    if (!this.defaultApp) {
-      this.defaultApp = await initializeFirebaseApp();
-    }
-
     const token = req.headers.authorization;
 
     if (token != null && token != '') {
-      this.defaultApp
-        .auth()
-        .verifyIdToken(token.replace('Bearer', '').trim())
-        .then(async (decodedToken) => {
-          let user = await this.usersServices.findOneUserByEmail(
-            decodedToken.email,
-          );
+      try {
+        const decodedToken = await this.firebaseService.verifyToken(token);
 
-          if (!user) {
-            user = await this.usersServices.createUser({
-              uid: decodedToken.uid,
-              email: decodedToken.email,
-              roles: decodedToken?.role,
-            } as CreateUserDto);
-          }
+        const user = await this.usersServices.findOneUserByEmail(
+          decodedToken.email,
+        );
 
-          req['user'] = user;
-          next();
-        })
-        .catch((error) => {
-          console.log(error);
-          this.accessDenied(req.url, res);
-        });
+        req['user'] = user;
+        next();
+      } catch (error) {
+        this.accessDenied(req.url, res);
+        throw new Error(`Access Denied: ${error.message}`);
+      }
     } else {
       next();
     }
