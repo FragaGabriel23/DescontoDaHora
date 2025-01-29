@@ -5,17 +5,24 @@ import {
   IsString,
   Length,
   IsDateString,
+  IsEnum,
 } from 'class-validator';
+import { Role } from 'src/common/enums/roles/role.enum';
 
 export class CreateUserDto {
   @IsInt()
   @ApiPropertyOptional()
   readonly id?: number;
 
+  @ApiPropertyOptional({ description: 'Firebase UID' })
+  readonly uid?: string;
+
   @IsString()
   @Length(3, 25)
-  @ApiProperty({ description: 'User name, between 3 and 25 characters.' })
-  readonly name: string;
+  @ApiPropertyOptional({
+    description: 'User name, between 3 and 25 characters.',
+  })
+  readonly name?: string;
 
   @IsEmail()
   @ApiProperty({ description: 'Valid email address of the user.' })
@@ -28,4 +35,8 @@ export class CreateUserDto {
   @IsDateString()
   @ApiPropertyOptional({ description: 'Update date in ISO format.' })
   readonly updatedAt?: string;
+
+  @IsEnum(Role)
+  @ApiPropertyOptional({ description: 'Authorization Rules' })
+  readonly roles?: Role;
 }

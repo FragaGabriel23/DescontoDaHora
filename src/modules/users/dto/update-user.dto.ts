@@ -5,7 +5,9 @@ import {
   IsString,
   Length,
   IsDateString,
+  IsEnum,
 } from 'class-validator';
+import { Role } from 'src/common/enums/roles/role.enum';
 
 export class UpdateUserDto {
   @IsInt()
@@ -30,4 +32,8 @@ export class UpdateUserDto {
   @IsDateString()
   @ApiPropertyOptional({ description: 'Update date in ISO format.' })
   readonly updatedAt?: string;
+
+  @IsEnum(Role)
+  @ApiPropertyOptional({ description: 'Authorization Rules' })
+  readonly roles?: Role;
 }
